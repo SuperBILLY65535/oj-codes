@@ -33,4 +33,5 @@
 bin/
 
 # Test files
-test.cpp
+test*.cpp
+.vscode/
