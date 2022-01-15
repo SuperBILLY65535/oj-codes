@@ -10,47 +10,54 @@ struct food {
         return catFood * 1.0 / beans;
     }
 };
-food makeFood(int c, int b) {
+food makeFood(int catFood, int beans) {
     food tmp;
-    tmp.catFood = c; tmp.beans = b;
+    tmp.catFood = catFood; tmp.beans = beans;
     return tmp;
 }
-struct sorter{
-    bool operator() (const food& a, const food& b) {
-        return a.price() < b.price();
-    }
-};
 
-double solve(double catFood, std::deque<food> &vault) {
-    // std::sort(vault.front(), vault.back(), sorter());
+bool operator< (const food& lhs, const food& rhs) {
+    if(lhs.catFood == 0){
+        if(rhs.catFood == 0) {
+            return (lhs.beans < rhs.beans);
+        }
+        else return true;
+    }
+    else {
+        if(rhs.catFood == 0) {
+            return false;
+        }
+        else return lhs.price() < rhs.price();
+    }
+}
+
+double solve(double catFood, food* vault, unsigned size) {
+    std::sort(vault, vault + size);
+    unsigned i = 0;
     double beans = 0;
-    while(!vault.empty() && (catFood > 0)) {
-        if(catFood >= vault.front().catFood) {
-            catFood -= vault.front().catFood;
-            beans += vault.front().beans;
-            vault.pop_front();
-        }
-        else {
-            beans += vault.front().price() * catFood;
-            catFood = 0;
-            vault.clear();
-        }
+    while((i < size) && (catFood > vault[i].catFood)) {
+        catFood -= vault[i].catFood;
+        beans += vault[i].beans;
+        i++;
+    }
+    if(i < size) {
+        beans += vault[i].price() * catFood;
+        catFood = 0;
     }
     return beans;
 }
 
 int main() {
     int m, n;
-    std::deque<food> que;
+    food que[1001];
     while(std::cin>> m >> n) {
-        que.clear();
         if((m == -1) & (n == -1)) break;
-        int k = n, bean, food;
+        int k = n, beans, catFood;
         while(k--) {
-            std::cin >> bean >> food;
-            que.push_back(makeFood(food, bean));
+            std::cin >> beans >> catFood;
+            que[k] = makeFood(catFood, beans);
         }
-        std::cout << std::setprecision(3) << solve(food, que) << std::endl;
+        std::cout << std::setprecision(3) << solve(m, que, n) << std::endl;
     }
     return 0;
 }
