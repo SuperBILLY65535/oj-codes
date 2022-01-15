@@ -1,4 +1,5 @@
 #include <iostream>
+#include <cstdio>
 #include <iomanip>
 #include <algorithm>
 #include <deque>
@@ -7,7 +8,7 @@
 struct food {
     int catFood, beans;
     double price() const {
-        return catFood * 1.0 / beans;
+        return 1.0 * catFood / beans;
     }
 };
 food makeFood(int catFood, int beans) {
@@ -31,7 +32,8 @@ bool operator< (const food& lhs, const food& rhs) {
     }
 }
 
-double solve(double catFood, food* vault, unsigned size) {
+double solve(double catFood, food vault[], unsigned size) {
+    if(size == 0) return 0;
     std::sort(vault, vault + size);
     unsigned i = 0;
     double beans = 0;
@@ -41,7 +43,7 @@ double solve(double catFood, food* vault, unsigned size) {
         i++;
     }
     if(i < size) {
-        beans += vault[i].price() * catFood;
+        beans += (catFood * vault[i].beans * 1.0 / vault[i].catFood);
         catFood = 0;
     }
     return beans;
@@ -52,12 +54,19 @@ int main() {
     food que[1001];
     while(std::cin>> m >> n) {
         if((m == -1) & (n == -1)) break;
-        int k = n, beans, catFood;
+        int k = n, beans, catFood, freeBeans = 0, i = 0;
         while(k--) {
             std::cin >> beans >> catFood;
-            que[k] = makeFood(catFood, beans);
+            if(catFood != 0) que[i++] = makeFood(catFood, beans);
+            else {
+                freeBeans += beans;
+                n--;
+            }
         }
-        std::cout << std::setprecision(3) << solve(m, que, n) << std::endl;
+        // std::printf("%.3f\n", solve(m, que, n));
+        double ans = solve(m, que, n) + freeBeans;
+        ans *= 1000; ans = (int)(ans + 0.5); ans/=1000;
+        std::printf("%.3lf\n", ans);
     }
     return 0;
 }
