@@ -33,5 +33,10 @@
 bin/
 
 # Test files
+<<<<<<< HEAD
 test.cpp
 hello_world.cpp
+=======
+test*.cpp
+.vscode/
+>>>>>>> e653ad6caaaf95d1e214c3b3e37354f0c8794706
