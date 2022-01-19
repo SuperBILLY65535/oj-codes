@@ -1,48 +1,47 @@
 #include <iostream>
+#include <vector>
 #include <algorithm>
 #include <functional>
 
-bool cnt(int *deg, int size) {
-    for(int i = 0; i < size; i++) {
-        if(deg[i] != 0) return false;
-    }
-    return true;
-}
-
-bool flag2(int *deg, int size) {
-    for(int i = 0; i < size; i++) {
-        if(deg[i] < 0) return true;
-    }
-    return false;
-}
-
-void solve(int *deg, int size) {
-    for(int i = 0; i < size; ++i) {
-        std::sort(deg + i, deg + size, std::greater<int>());
-        if(cnt(deg + i, size - i)) {
-            std::cout << "yes\n";
-            return;
+void solve(std::vector<int> &deg) 
+{
+    auto cur = deg.begin();
+    while(*cur > 0)
+    {
+        for(int i = 0; i < *cur; i++) {
+            *(cur + i) --;
         }
-        if(flag2(deg + i, size - i)) {
+        *cur = 0;
+        cur++;
+        std::sort(cur, deg.end(), std::greater<int>());
+    }
+    for(auto i: deg)
+    {
+        if(i < 0) {
             std::cout << "no\n";
             return;
         }
-        for(int j = 1; j <= deg[i]; j++) {
-            deg[i + j]--;
-        }
     }
+    std::cout << "yes\n";
+    return;
 }
 
-int main() {
-    int tests, seq, deg[1000];
+int main() 
+{
+    int tests, seq;
+    std::vector<int> deg;
     std::cin >> tests;
-    while(tests--) {
+    while(tests--) 
+    {
+        deg.clear();
         std::cin >> seq;
-        int i = seq;
-        while(i--) {
-            std::cin >> deg[i];
-            solve(deg, seq);
+        deg.resize(seq);
+        while(seq--) 
+        {
+            std::cin >> deg[seq];
         }
+        std::sort(deg.begin(), deg.end(), std::greater<int>());
+        solve(deg);
     }
     return 0;
 }
