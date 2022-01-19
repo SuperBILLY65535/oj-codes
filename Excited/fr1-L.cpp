@@ -1,47 +1,59 @@
 #include <iostream>
-#include <vector>
 #include <algorithm>
 #include <functional>
+#include <cstring>
 
-void solve(std::vector<int> &deg) 
+void yes() {std::cout << "yes\n";}
+void no() {std::cout << "no\n";}
+
+void solve(int *deg, int size)
 {
-    auto cur = deg.begin();
-    while(*cur > 0)
+    std::sort(deg, deg + size, std::greater<int>());
+    if(*deg >= size)
     {
-        for(int i = 0; i < *cur; i++) {
-            *(cur + i) --;
-        }
-        *cur = 0;
-        cur++;
-        std::sort(cur, deg.end(), std::greater<int>());
+        no();
+        return;
     }
-    for(auto i: deg)
+    if(*deg > 0) 
     {
-        if(i < 0) {
-            std::cout << "no\n";
-            return;
+        for(int i = 1; i <= *deg; i++) 
+        {
+            deg[i]--;
+            if(deg[i] < 0) 
+            {
+                no();
+                return;
+            }
         }
+        solve(deg + 1, size - 1);
+        return;
     }
-    std::cout << "yes\n";
-    return;
+    else
+    {
+        for(int i = 0; i < size; i++) 
+        {
+            if(deg[i] < 0) 
+            {
+                no();
+                return;
+            }
+        }
+        yes();
+    }
 }
 
 int main() 
 {
-    int tests, seq;
-    std::vector<int> deg;
+    int tests, nodes, deg[1001];
     std::cin >> tests;
     while(tests--) 
     {
-        deg.clear();
-        std::cin >> seq;
-        deg.resize(seq);
-        while(seq--) 
+        std::cin >> nodes;
+        for(int i = 0; i < nodes; i++) 
         {
-            std::cin >> deg[seq];
+            std::cin >> deg[i];
         }
-        std::sort(deg.begin(), deg.end(), std::greater<int>());
-        solve(deg);
+        solve(deg, nodes);
     }
     return 0;
 }
