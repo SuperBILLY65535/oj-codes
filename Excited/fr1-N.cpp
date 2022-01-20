@@ -1,4 +1,6 @@
 #include <cstdio>
+#include <string>
+#include <sstream>
 #include <iostream>
 #include <algorithm>
 #include <deque>
