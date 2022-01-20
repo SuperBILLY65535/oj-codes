@@ -1,4 +1,5 @@
 #include <deque>
+#include <algorithm>
 
 struct node{
     size_t _depth;
@@ -28,7 +29,7 @@ struct ufs{
     void init(size_t n)
     {
         nodes.resize(n);
-        for(int i = 0; i < n; i++) nodes[i].init();
+        for(auto &i: nodes) i.init();
     }
     bool query(const size_t &a, const size_t &b)
     {
@@ -46,6 +47,18 @@ struct ufs{
             if(nodes[a].dp() < nodes[b].dp()) nodes[a].grandfa()->fa = nodes[b].grandfa();
             else nodes[b].grandfa()->fa = nodes[a].grandfa();
         }
+    }
+    node &operator[] (const size_t &index)
+    {
+        return nodes[index-1];
+    }
+    bool check_connectivity() {
+        node *t = nodes[1].grandfa();
+        for(size_t i = 1; i < nodes.size(); i++) 
+        {
+            if(nodes[i].grandfa() != t) return false;
+        }
+        return true;
     }
 };
 
