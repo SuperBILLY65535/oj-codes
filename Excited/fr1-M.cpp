@@ -1,4 +1,5 @@
 #include <iostream>
+#include <vector>
 #include <cstdio>
 #include <algorithm>
 
@@ -38,18 +39,21 @@ void unite(node &a, node &b) {
 
 int main() {
     node nodes[1001];
+    // std::vector<node> nodes(1001);
     int cities, roads, t1, t2, count;
-    while(std::scanf("%d", &cities), cities) {
+    while(std::scanf("%d", &cities), cities) 
+    {
         count = 0;
-        for(auto i: nodes) i.init();
-        for(std::scanf("%d", &roads); roads > 0; roads--) {
+        for(int i = 1; i <= cities; i++) nodes[i].init();
+        for(std::scanf("%d", &roads); roads > 0; roads--) 
+        {
             scanf("%d %d", &t1, &t2);
             unite(nodes[t1], nodes[t2]);
         }
-        for(auto i: nodes) {
-            if(i.fa == &i) {
-                count++;
-            }
+        count = -1;
+        for(int i = 1; i <= cities; i++)
+        {
+            if(nodes[i].fa == &nodes[i]) count++;
         }
         std::printf("%d\n", count);
     }
