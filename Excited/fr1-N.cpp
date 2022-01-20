@@ -1,17 +1,15 @@
-#include <cstdio>
-#include <string>
-#include <sstream>
+#include <vector>
 #include <iostream>
 #include <algorithm>
+#include <functional>
 #include <deque>
 
-struct node
-{
-    unsigned depth;
+struct node{
+    size_t _depth;
     node* fa;
     void init() 
     {
-        depth = 1;
+        _depth = 1;
         fa = this;
     }
     node *grandfa() 
@@ -19,62 +17,59 @@ struct node
         if(fa == this) return this;
         else return fa->grandfa();
     }
+    size_t &dp()
+    {
+        return grandfa()->_depth;
+    } 
 };
 
-bool query(node &a, node &b) 
-{
-    return (a.grandfa() == b.grandfa());
-}
-
-void unite(node &a, node &b) 
-{
-    if(a.grandfa()->depth == b.grandfa()->depth) 
+struct ufs{
+    std::deque<node> nodes;
+    void init(size_t n)
     {
-        node *tmp = b.grandfa();
-        a.grandfa()->fa = tmp;
-        tmp->depth++;
+        nodes.resize(n);
+        for(size_t i = 0; i < n; i++) nodes[i].init();
     }
-    else
+    bool query(const size_t &a, const size_t &b)
     {
-        if(a.depth < b.depth) 
+        return nodes[a].grandfa() == nodes[b].grandfa();
+    }
+    void unite(const size_t &a, const size_t &b)
+    {
+        if(nodes[a].dp() == nodes[b].dp())
         {
-            a.grandfa()->fa = b.grandfa();
+            nodes[a].grandfa()->fa = nodes[b].grandfa();
+            nodes[b].dp()++;
         }
-        else 
+        else
         {
-            b.grandfa()->fa = a.grandfa();
+            if(nodes[a].dp() < nodes[b].dp()) nodes[a].grandfa()->fa = nodes[b].grandfa();
+            else nodes[b].grandfa()->fa = nodes[a].grandfa();
         }
     }
-}
-
-struct road
-{
-    int price;
-    node *begin, *end;
 };
 
-node villages[101];
-
-void solve(std::deque<road> roads) 
+struct road{
+    int begin, end, cost;
+};
+bool operator<(const road& lhs, const road& rhs)
 {
-    int sum = 0;
-    std::sort(roads.begin(), roads.end(), 
-        [] (const road &lhs, const road &rhs) ->bool {
-            return lhs.price < rhs.price;
-        });
-    while(!roads.empty()) 
+    return lhs.cost < rhs.cost;
+}
+
+ufs villages;
+std::deque<road> roads;
+
+void solve()
+{
+    unsigned sum = 0;
+    std::sort(roads.begin(), roads.end());
+    while(!roads.empty())
     {
-        if(!query
-        (
-            *(*roads.begin()).begin,
-            *(*roads.begin()).end
-        )){
-            unite
-            (
-            *(*roads.begin()).begin,
-            *(*roads.begin()).end
-            );
-            sum += (*roads.begin()).price;
+        if(!villages.query(roads.front().begin, roads.front().end))
+        {
+            sum += roads.front().cost;
+            villages.unite(roads.front().begin, roads.front().end);
         }
         roads.pop_front();
     }
@@ -84,22 +79,19 @@ void solve(std::deque<road> roads)
 
 int main()
 {
-    
     road tmp;
-    std::deque<road> roads;
-    int n, x, y;
-    while(std::cin >> n) 
+    int n;
+    while(std::cin >> n)
     {
         if(n == 0) break;
+        villages.init(n + 1);
         roads.clear();
-        for(int i = 1; i <= n; i++) villages[i].init();
-        while(n--) 
+        for(int i = n*(n-1)/2; i > 0; i--)
         {
-            std::cin >> x >> y >> tmp.price;
-            tmp.begin = &villages[x]; tmp.end = &villages[y];
+            std::cin >> tmp.begin >> tmp.end >> tmp.cost;
             roads.push_back(tmp);
         }
-        solve(roads);
+        solve();
     }
     return 0;
 }
