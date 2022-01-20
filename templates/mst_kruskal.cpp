@@ -48,3 +48,30 @@ struct ufs{
         }
     }
 };
+
+struct edge{
+    int begin, end, weight;
+};
+bool operator<(const edge& lhs, const edge& rhs)
+{
+    return lhs.weight < rhs.weight;
+}
+
+ufs graph;
+std::deque<edge> edges;
+
+int get_mst_weight()
+{
+    int sum = 0;
+    std::sort(edges.begin(), edges.end());
+    while(!edges.empty())
+    {
+        if(!graph.query(edges.front().begin, edges.front().end))
+        {
+            sum += edges.front().weight;
+            graph.unite(edges.front().begin, edges.front().end);
+        }
+        edges.pop_front();
+    }
+    return sum;
+}
