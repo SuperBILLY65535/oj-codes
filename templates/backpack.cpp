@@ -1,9 +1,14 @@
-#include <vector>
+#include <deque>
 #include <algorithm>
 #include <cstring>
 
 template<class T = int>
-T backpack_01(T capacity, T *weight, T *value, size_t items)
+T backpack_01(
+    const T &capacity, 
+    T *weight, 
+    T *value, 
+    const size_t &items
+)
 {
     T *dp = new T[capacity + 1];
     std::memset(dp, 0, (capacity + 1) * sizeof(T));
@@ -19,7 +24,42 @@ T backpack_01(T capacity, T *weight, T *value, size_t items)
 }
 
 template<class T = int>
-T backpack_full(T capacity, T *weight, T *value, size_t items)
+struct item{
+    T value, weight, amount;
+    static item new_item(T _v, T _w, T _a)
+    {
+        item tmp;
+        tmp.value = _v; tmp.weight = _w; tmp.amount = _a;
+        return tmp;
+    }
+};
+
+template<class T = int>
+T backpack_01(
+    const T &capacity, 
+    const std::deque<item<T>> &items
+)
+{
+    T *dp = new T[capacity + 1];
+    std::memset(dp, 0, (capacity + 1) * sizeof(T));
+    for(item<T> i: items)
+    for(T v = capacity; v >= i.weight; v--)
+        dp[v] = std::max<T>(
+            dp[v],
+            dp[v-i.weight] + i.value;
+        );
+    T ans = dp[capacity];
+    delete[] dp;
+    return ans;
+}
+
+template<class T = int>
+T backpack_full(
+    const T &capacity, 
+    T *weight, 
+    T *value, 
+    const size_t &items
+)
 {
     T *dp = new T[capacity + 1];
     std::memset(dp, 0, (capacity + 1) * sizeof(T));
@@ -28,6 +68,25 @@ T backpack_full(T capacity, T *weight, T *value, size_t items)
         dp[v] = std::max<T>(
             dp[v],
             dp[v-weight[i]] + value[i];
+        );
+    T ans = dp[capacity];
+    delete[] dp;
+    return ans;
+}
+
+template<class T = int>
+T backpack_full(
+    const T &capacity, 
+    const std::deque<item<T>> &items
+)
+{
+    T *dp = new T[capacity + 1];
+    std::memset(dp, 0, (capacity + 1) * sizeof(T));
+    for(item<T> i: items)
+    for(T v = i.weight; v <= capacity; v++)
+        dp[v] = std::max<T>(
+            dp[v],
+            dp[v-i.weight] + i.value;
         );
     T ans = dp[capacity];
     delete[] dp;
