@@ -51,7 +51,7 @@ int main()
                 dp[(time+1)%2][10]
             );
 
-            while(time == pies.front().time) 
+            while((!pies.empty()) && (time == pies.front().time)) 
             {
                 dp[time%2][pies.front().loc]++;
                 pies.pop_front();
