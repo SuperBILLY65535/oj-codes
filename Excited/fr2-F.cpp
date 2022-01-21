@@ -5,19 +5,21 @@
 
 const int maxv = 1000 + 1;
 
-// template<class T = int>
-// T backpack_01(T capacity, T *weight, T *value, size_t items)
-// {
-//     static T dp[maxv];
-//     std::memset(dp, 0, sizeof(dp));
-//     for(size_t i = 0; i < items; i++)
-//     for(T v = capacity; v >= value[i]; v--)
-//         dp[v] = std::max<T>(
-//             dp[v],
-//             dp[v-weight[i]] + value[i]
-//         );
-//     return dp[capacity];
-// }
+template<class T = int>
+T backpack_01(T capacity, T *weight, T *value, size_t items)
+{
+    T *dp = new T[capacity + 1];
+    std::memset(dp, 0, (capacity + 1) * sizeof(T));
+    for(size_t i = 0; i < items; i++)
+    for(T v = capacity; v >= weight[i]; v--)
+        dp[v] = std::max<T>(
+            dp[v],
+            dp[v-weight[i]] + value[i]
+        );
+    T ans = dp[capacity];
+    delete[] dp;
+    return ans;
+}
 
 const int maxn = 1000;
 
@@ -30,15 +32,15 @@ int main() {
         std::cin >> num >> volume;
         for(int i = 0; i < num; i++) std::cin >> value[i];
         for(int i = 0; i < num; i++) std::cin >> weight[i];
-        // std::cout << backpack_01(volume, weight, value, num) << '\n'; 
+        std::cout << backpack_01(volume, weight, value, num) << '\n'; 
 
-        for(int i = 0; i < num; i++)
-        for(int v = volume; v >= weight[i]; v--)
-            dp[v] = [] (const int &a, const int &b) ->int{
-                return a>b?a:b;
-            }(dp[v], dp[v-weight[i]]+value[i]);
+        // for(int i = 0; i < num; i++)
+        // for(int v = volume; v >= weight[i]; v--)
+        //     dp[v] = [] (const int &a, const int &b) ->int{
+        //         return a>b?a:b;
+        //     }(dp[v], dp[v-weight[i]]+value[i]);
         
-        std::cout << dp[volume] << '\n';
+        // std::cout << dp[volume] << '\n';
     }
     return 0;
 }
