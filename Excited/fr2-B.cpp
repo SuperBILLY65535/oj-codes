@@ -1,21 +1,25 @@
 #include <iostream>
 #include <algorithm>
-#include <deque>
+#include <cstring>
 
 int main() 
 {
-    int n, t; 
-    std::deque<int> missiles, len;
+    int n, missiles[3001], len[3001], ans;
     while(std::cin >> n)
     {
-        missiles.clear();
-        len.resize(n);
-        while(n--) {
-            std::cin >> t;
-            missiles.push_back(t);
+        for(int i = 0; i < n; i++) std::cin >> missiles[i];
+        ans = 0;
+        for(int i = 0; i < n; i++) 
+        {
+            len[i] = 1;
+            for(int j = 0; j < i; j++)
+            {
+                if(missiles[i] > missiles[j])
+                    len[i] = std::max(len[i], len[j]+1);
+            }
         }
-        for(int i = 0; i < missiles.size(); i++) {
-            
-        }
+        for(int i = 0; i < n; i++) ans = std::max(ans, len[i]);
+        std::cout << ans << '\n';
     }
+    return 0;
 }
