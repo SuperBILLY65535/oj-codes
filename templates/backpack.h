@@ -93,3 +93,27 @@ T backpack_full(
     return ans;
 }
 
+template<class T = int>
+T backpack_multi(
+    const T& capacity, 
+    const std::deque<item<T>> &items
+)
+{
+    std::deque<item<T>> it;
+    it.clear();
+    for(item<T> i: items) 
+    {
+        item<T> tmp = i; tmp.amount = 1;
+        while(i.amount > 0)
+        {
+            if(i.amount % 2 == 1)
+            {
+                it.push_back(tmp);
+            }
+            i.amount /= 2;
+            tmp.value *= 2;
+            tmp.weight *= 2;
+        }
+    }
+    return backpack_01(capacity, it);
+}
