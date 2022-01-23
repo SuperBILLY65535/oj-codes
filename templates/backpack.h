@@ -72,7 +72,7 @@ T backpack_full(
     return ans;
 }
 
-template<class T = int>
+
 T backpack_full(
     const T &capacity, 
     const std::deque<item> &items
@@ -80,28 +80,28 @@ T backpack_full(
 {
     T *dp = new T[capacity + 1];
     std::memset(dp, 0, (capacity + 1) * sizeof(T));
-    for(item<T> i: items)
+    for(item i: items)
     for(T v = i.weight; v <= capacity; v++)
         dp[v] = std::max<T>(
             dp[v],
-            dp[v-i.weight] + i.value;
+            dp[v-i.weight] + i.value
         );
     T ans = dp[capacity];
     delete[] dp;
     return ans;
 }
 
-template<class T = int>
+
 T backpack_multi(
     const T& capacity, 
     const std::deque<item> &items
 )
 {
-    std::deque<item<T>> it;
+    std::deque<item> it;
     it.clear();
-    for(item<T> i: items) 
+    for(item i: items) 
     {
-        item<T> tmp = i; tmp.amount = 1;
+        item tmp = i; tmp.amount = 1;
         while(i.amount > 0)
         {
             if(i.amount % 2 == 1)
