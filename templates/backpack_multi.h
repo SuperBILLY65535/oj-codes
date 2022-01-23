@@ -7,11 +7,11 @@
 typedef int T;
 
 struct item{
-    T value, weight, amount;
-    static item new_item(T _v, T _w, T _a)
+    T value, price, amount;
+    static item new_item(T _v, T _p, T _a)
     {
         item tmp;
-        tmp.value = _v; tmp.weight = _w; tmp.amount = _a;
+        tmp.value = _v; tmp.price = _p; tmp.amount = _a;
         return tmp;
     }
 };
@@ -24,10 +24,10 @@ T backpack_01(
     T *dp = new T[capacity + 1];
     std::memset(dp, 0, (capacity + 1) * sizeof(T));
     for(item i: items)
-    for(T v = capacity; v >= i.weight; v--)
+    for(T v = capacity; v >= i.price; v--)
         dp[v] = std::max<T>(
             dp[v],
-            dp[v-i.weight] + i.value
+            dp[v-i.price] + i.value
         );
     T ans = dp[capacity];
     delete[] dp;
@@ -48,12 +48,12 @@ T backpack_multi(
         {
             it.push_back(tmp);
             tmp.value *= 2;
-            tmp.weight *= 2;
+            tmp.price *= 2;
             tmp.amount -= count;
         }
         if(tmp.amount > 0) it.push_back(item::new_item(
             i.value * tmp.amount,
-            i.weight * tmp.amount,
+            i.price * tmp.amount,
             1
         ));
     }
