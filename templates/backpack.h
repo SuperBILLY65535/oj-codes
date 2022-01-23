@@ -2,7 +2,8 @@
 #include <algorithm>
 #include <cstring>
 
-template<class T = int>
+typedef int T;
+
 T backpack_01(
     const T &capacity, 
     T *weight, 
@@ -23,7 +24,6 @@ T backpack_01(
     return ans;
 }
 
-template<class T = int>
 struct item{
     T value, weight, amount;
     static item new_item(T _v, T _w, T _a)
@@ -34,26 +34,24 @@ struct item{
     }
 };
 
-template<class T = int>
 T backpack_01(
     const T &capacity, 
-    const std::deque<item<T>> &items
+    const std::deque<item> &items
 )
 {
     T *dp = new T[capacity + 1];
     std::memset(dp, 0, (capacity + 1) * sizeof(T));
-    for(item<T> i: items)
+    for(item i: items)
     for(T v = capacity; v >= i.weight; v--)
         dp[v] = std::max<T>(
             dp[v],
-            dp[v-i.weight] + i.value;
+            dp[v-i.weight] + i.value
         );
     T ans = dp[capacity];
     delete[] dp;
     return ans;
 }
 
-template<class T = int>
 T backpack_full(
     const T &capacity, 
     T *weight, 
@@ -67,7 +65,7 @@ T backpack_full(
     for(T v = weight[i]; v <= capacity; v++)
         dp[v] = std::max<T>(
             dp[v],
-            dp[v-weight[i]] + value[i];
+            dp[v-weight[i]] + value[i]
         );
     T ans = dp[capacity];
     delete[] dp;
@@ -77,7 +75,7 @@ T backpack_full(
 template<class T = int>
 T backpack_full(
     const T &capacity, 
-    const std::deque<item<T>> &items
+    const std::deque<item> &items
 )
 {
     T *dp = new T[capacity + 1];
@@ -96,7 +94,7 @@ T backpack_full(
 template<class T = int>
 T backpack_multi(
     const T& capacity, 
-    const std::deque<item<T>> &items
+    const std::deque<item> &items
 )
 {
     std::deque<item<T>> it;
