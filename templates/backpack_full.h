@@ -24,7 +24,7 @@ T backpack_full(
     T *dp = new T[capacity + 1];
     std::memset(dp, 0, (capacity + 1) * sizeof(T));
     for(item i: items)
-    for(T v = i.price; v <= capacity; v--)
+    for(T v = i.price; v <= capacity; v++)
         dp[v] = std::max<T>(
             dp[v],
             dp[v-i.price] + i.value
