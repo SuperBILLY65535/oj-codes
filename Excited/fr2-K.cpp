@@ -8,7 +8,7 @@ const int no_way = 0x7fffffff;
 int main()
 {
     
-    int cities, road, from, to, len, map[200][200], ans, vis[200], dis[200];
+    int cities, road, from, to, len, map[200][200], vis[200], dis[200];
     while(std::cin >> cities >> road)
     {
         for(int i = 0; i < cities; i++)
