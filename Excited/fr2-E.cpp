@@ -2,30 +2,34 @@
 #include <algorithm>
 #include <limits>
 #include <vector>
+#include <set>
 
-std::vector<unsigned long long> mul = {2u, 3u, 5u, 7u};
-const unsigned long long m = 2000000001u;
+std::vector<unsigned> mul = {2u, 3u, 5u, 7u};
 
 int main() {
-    std::vector<unsigned long long> ls = {1};
-    ls.reserve(5900);
-    std::vector<unsigned long long>::iterator cur = ls.begin();
-    unsigned long long tmp;
-    while(ls.size() < 5842)
+    std::set<unsigned> ugly = {1};
+    std::vector<unsigned> ans;
+    ans.reserve(5900);
+    for(const auto &i: ugly)
     {
-        for(auto i: mul) 
+        if(ugly.size() >= 5842) break;
+        for(auto j: mul)
         {
-            tmp = *cur * i;
-            if(tmp <= m) ls.push_back(tmp);
+            if(1ull * i * j <= 20'0000'0000)
+            {
+                ugly.emplace(i * j);
+            }
         }
-        cur++;
     }
-    std::sort(ls.begin(), ls.end());
-    unsigned n;
-    while(std::cin >> n)
+    for(const auto &i: ugly)
     {
-        if(n == 0) break;
-        std::cout << ls[n] << '\n';
+        ans.emplace_back(i);
+    }
+    int req;
+    while(std::scanf("%d", &req))
+    {
+        if(req == 0) break;
+        std::printf("%d\n", ans[req-1]);
     }
     return 0;
 }
