@@ -54,10 +54,10 @@ bool operator== (const pos &lhs, const pos &rhs)
 void solve(const pos &door, const int &time)
 {
     pos cur, tmp;
-    std::queue<pos> st;
+    std::queue<pos> st; // 状态队列
     tmp.setv(0,0,0,0);
     if(tmp == door)
-    {
+    {   // 特判
         std::printf("0\n");
         return;
     }
@@ -73,20 +73,20 @@ void solve(const pos &door, const int &time)
 
         if(cur.t > time) break;
         for(int i = 0; i < 6; i++)
-        {
+        {   // tmp存储下一个状态
             tmp.setv(
                 cur.h + move[i][0],
                 cur.l + move[i][1],
                 cur.w + move[i][2],
                 cur.t + 1
             );
-            if(tmp == door)
-            {
-                std::printf("%d\n", tmp.t);
-                return;
-            }
             if(boundcheck(tmp, door))
             {
+                if(tmp == door)
+                {
+                    std::printf("%d\n", tmp);
+                    return;
+                }
                 tmp.visit();
                 st.push(std::move(tmp));
             }
