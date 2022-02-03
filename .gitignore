@@ -34,3 +34,6 @@ bin/
 
 # Test files
 hello_world.cpp
+
+# VS Code Configurations
+.vscode
