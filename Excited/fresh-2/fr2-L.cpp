@@ -1,82 +1,98 @@
-#define ctype int
-#include <cstdio>
+#include <iostream>
 #include <cstring>
-#include <set>
+#include <vector>
+#include <queue>
+#include <algorithm>
+#include <functional>
 
-const int maxn = 1001;
-const ctype no_way = 0x3f3f3f3f;    // no way through
+const int maxn = 201, no_way = 0x7fffffff;
+typedef int ans_type;
 
-bool vis[maxn], pre[maxn];
-
-void djikstra(ctype map[][maxn], ctype dis[], const int &begin, const int &nodes)
+struct edge
 {
-    for(int i = 0; i < nodes; i++)
-    {   // initialization
-        vis[i] = false;
-        dis[i] = no_way;
-        pre[i] = -1;
-    }
-    
-    int cur;
-    ctype Min = no_way;
-    dis[begin] = 0;
-    for(int j = 0; j < nodes; j++)
+    int from, to, len;
+    edge() = default;
+    bool operator() (const edge &lhs, const edge &rhs) const
     {
-        cur = -1;
-        Min = no_way;
-        for(int i = 0; i < nodes; i++) // find the currently shortest path
-            if(!vis[i] && dis[i] <= Min)
-            {
-                Min = dis[i];
-                cur = i;
-            }
-        if(cur == -1) break;
-        
-        vis[cur] = true;    // visit node_cur
-
-        for(int i = 0; i < nodes; i++)
-            if(!vis[i] && map[cur][i] != no_way && dis[i] > dis[cur] + map[cur][i])
-            {
-                dis[i] = dis[cur] + map[cur][i];
-                pre[i] = cur;
-            }
+        return lhs.len > rhs.len;
     }
-    return;
+};
+
+std::vector<std::vector<edge>> map;
+std::vector<int> de;
+ans_type dis[maxn], fa[maxn];
+bool vis[maxn];
+
+void Djikstra(const int &cities, const int &begin)
+{
+    for(auto &i: dis) i = no_way;
+    std::memset(fa, -1, sizeof(fa));
+    std::memset(vis, false, sizeof(vis));
+    dis[begin] = 0;
+    vis[begin] = true;
+
+    std::priority_queue<edge, std::vector<edge>, edge> que;
+    edge cur;
+    for(const auto &i: map[begin]) 
+        que.push(i);
+    
+    vis[begin] = true;
+
+    int next;
+    while(!que.empty())
+    {
+        next = -1;
+        cur = que.top();
+        que.pop();
+
+        if(dis[cur.to] > dis[cur.from] + cur.len)
+        {
+            dis[cur.to] = dis[cur.from] + cur.len;
+            fa[cur.to] = cur.from;
+            if(!vis[cur.to])
+            {
+                vis[cur.to] = true;
+                for(const auto &i: map[cur.to]) que.push(i);
+            }
+        }
+    }
 }
 
-int main()
+int main() 
 {
-    ctype map[maxn][maxn], dis[maxn], t, s, d, b, e, l;
-    std::set<int> dest;
-    while(std::scanf("%d %d %d", &t, &s, &d) == 3)
+    std::ios_base::sync_with_stdio(false);
+    std::cin.tie(nullptr);
+    map.resize(maxn);
+
+    int road, nei, dest, from;
+    edge tmp;
+
+    while(std::cin >> road >> nei >> dest)
     {
-        dest.clear();
-        for(int i = 1; i <= t; i++)
-        for(int j = 1; j <= t; j++)
-            map[i][j] = no_way;
-        while(t--)
+        for(auto &i: map)
         {
-            std::scanf("%d %d %d", &b, &e, &l);
-            map[b][e] = std::min(map[b][e], l);
-            map[e][b] = map[b][e];
+            i.clear();
+            i.reserve(maxn);
         }
-        while(s--)
+        while(road--)
         {
-            std::scanf("%d", &b);
-            map[0][b] = 0;
+            std::cin >> tmp.from >> tmp.to >> tmp.len; from = tmp.from;
+            map[from].emplace_back(tmp);
+            // comment the two following lines if given single-directional paths
+            std::swap(tmp.from, tmp.to); from = tmp.from;
+            map[from].emplace_back(tmp);
         }
-        while(d--)
+        while(nei--)
         {
-            std::scanf("%d", &e);
-            dest.emplace(e);
+            tmp.from = 0;
+            std::cin >> tmp.to;
+            map[0].emplace_back(std::move(tmp));
         }
-        djikstra(map, dis, 0, maxn);
-        int Min = no_way;
-        for(const auto &i: dest)
+        de.clear();
+        while(dest--)
         {
-            if(dis[i] < Min) Min = dis[i];
+            std::cin >> from;
+            de.emplace_back(std::move(from));
         }
-        std::printf("%d\n", Min);
     }
-    return 0;
 }
