@@ -108,3 +108,23 @@ Matrix pow(const Matrix &mat, int p) {
     }
     return ans;
 }
+
+int main() {
+    Matrix st(10, 1), m(10, 10);
+    int p;
+    for(int i = 0; i < 10; i++) {
+        st[i][0] = 9 - i;
+    }
+    for(int i = 0; i < 9; i++) {
+        m[i+1][i] = 1;
+    }
+    while(std::cin >> p >> modulus) {
+        for(auto &i: m[0]) std::cin >> i;
+        if(p < 10) std::cout << m[9 - p][0] << '\n';
+        else {
+            Matrix ans = pow(m, p - 9) * st;
+            std::cout << ans[0][0] << '\n';
+        }
+    }
+    return 0;
+}
