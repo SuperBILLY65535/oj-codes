@@ -1,5 +1,6 @@
 #include <iostream>
 #include <vector>
+#include <array>
 #include <utility>
 #include <cassert>
 #include <initializer_list>
@@ -19,12 +20,45 @@ public:
     const std::vector<Numtype> &operator[] (const size_t &_index) const {
         return this->mat[_index];
     }
-
+    /**
+     * @brief Construct a new Matrix object by size and default element
+     * 
+     * @param row size of row
+     * @param col size of column
+     * @param elem default element, defaults to 0
+     */
     Matrix(const size_t &row, const size_t &col, const Numtype &elem = 0) {
         this->mat.resize(row);
         for(auto &_row: mat) 
             _row.resize(col, elem);
     }
+
+    /**
+     * @brief Construct a new vector matrix
+     * 
+     * @param isColVec marks if this vector is a column vector
+     * @param lst list of elements
+     */
+    Matrix(const bool &isColVec, const std::initializer_list<Numtype> &lst) {
+        if(isColVec) {
+            mat.resize(lst.size());
+            auto r = mat.begin();
+            for(const auto &rl: lst) {
+                r->resize(1);
+                r->front() = rl;
+                r++;
+            }
+        } else {
+            mat.resize(1);
+            mat[0] = lst;
+        }
+    }
+
+    /**
+     * @brief Construct a new Matrix object by a 2-dimensional initializer_list
+     * 
+     * @param lst a 2-dimensional initializer_list
+     */
     Matrix(const std::initializer_list<std::initializer_list<Numtype>> &lst) {
         this->mat.resize(lst.size());
         auto r = mat.begin();
@@ -54,8 +88,14 @@ public:
         }
         return std::move(ans); 
     }
+    /**
+     * @brief Returns an identity matrix of size s
+     * 
+     * @param s size of the identity matrix
+     * @return Matrix identity matrix
+     */
     static Matrix identity(const size_t &s) {
-        assert(s > 0);
+        assert(s >= 0);
         Matrix ans(s, s);
         for(size_t i = 0; i < s; i++)
             ans[i][i] = 1;
