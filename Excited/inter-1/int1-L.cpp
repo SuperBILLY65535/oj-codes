@@ -1,14 +1,15 @@
 #include <iostream>
 #include <vector>
+#include <array>
 #include <utility>
 #include <cassert>
 #include <initializer_list>
 
 typedef long long Numtype;
 
-Numtype modulus;
+// Numtype modulus;
 
-#define MODULUS modulus
+#define MODULUS 10007LL
 
 class Matrix{
     std::vector<std::vector<Numtype>> mat;
@@ -146,4 +147,19 @@ Matrix pow(const Matrix &mat, Numtype p) {
         tmp = tmp * tmp;
     }
     return ans;
+}
+
+int main() {
+    Numtype N, X, Y;
+    while(std::cin >> N >> X >> Y) {
+        Matrix st(true, {2, 1, 1, 1}), iter = {
+            {1, X*X%MODULUS,    2*X*Y%MODULUS,  Y*Y%MODULUS},
+            {0, X*X%MODULUS,    2*X*Y%MODULUS,  Y*Y%MODULUS},
+            {0, X%MODULUS,      Y%MODULUS,      0},
+            {0, 1,              0,              0}
+        };
+        Matrix ans = pow(iter, N-1) * st;
+        std::cout << ans[0][0] % MODULUS << '\n';
+    }
+    return 0;
 }
