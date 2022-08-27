@@ -9,7 +9,15 @@
             "compilerPath": "/usr/bin/gcc",
             "cStandard": "gnu11",
             "cppStandard": "gnu++20",
-            "intelliSenseMode": "linux-gcc-x64"
+            "intelliSenseMode": "linux-gcc-x64",
+            "compilerArgs": [
+                "-std=gnu++20",
+                "-o",
+                "-g",
+                "${fileBasenameNoExtension}",
+                "-Wall",
+                "-Wextra"
+            ]
         }
     ],
     "version": 4
